@@ -231,6 +231,7 @@ body.fica-em-pe .rotate{display:none!important}
   background:radial-gradient(circle at 50% 42%,#fff 62%,#EFE6DA 63%,#E0D3C2 100%);
   border:6px solid #D9C9B4;box-shadow:inset 0 -9px 18px rgba(0,0,0,.09), 0 10px 22px -12px rgba(0,0,0,.45);
   display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:4px;padding:15%}
+.plate.resumo{width:min(212px,62%);margin-inline:auto}
 .plate .bit{display:flex;flex-direction:column;align-items:center;gap:1px;animation:pop .28s cubic-bezier(.3,1.5,.5,1)}
 .plate .bit em{font-size:26px;font-style:normal;line-height:1}
 .plate .bit span{font-size:8.5px;font-weight:800;color:#6B5A44;line-height:1}
@@ -357,7 +358,7 @@ body.fica-em-pe .rotate{display:none!important}
   .scard{display:grid;grid-template-columns:1fr minmax(148px,30%);grid-template-rows:auto minmax(0,1fr);
     max-height:calc(100dvh - 20px);width:min(720px,100%)}
   .shead{grid-column:1/-1}
-  .sbody{grid-column:1;grid-row:2;overflow:auto;padding:14px;gap:10px}
+  .sbody{grid-column:1;grid-row:2;overflow:auto;padding:12px;gap:7px}
   .sacts{grid-column:2;grid-row:2;flex-direction:column;justify-content:center;align-content:center;
     padding:14px 14px 14px 0;gap:8px;overflow:auto}
   .sacts .btn{flex:0 0 auto;width:100%;font-size:14px;padding:10px 10px}
@@ -371,6 +372,40 @@ body.fica-em-pe .rotate{display:none!important}
   .check{font-size:12px;padding:6px 9px}
 }
 
+
+/* controles maiores no celular deitado, proporcionais à altura da tela */
+@media (max-height:560px) and (orientation:landscape){
+  :root{--die:clamp(48px,15.5vh,78px); --colD:clamp(98px,27vh,136px); --colE:96px}
+  .board{width:min(calc(100vw - var(--colE) - var(--colD) - 32px), calc((100dvh - 16px) * 1.4133))}
+  .bar{width:var(--colD);gap:calc(var(--die)*0.16);padding:calc(var(--die)*0.16) calc(var(--die)*0.12)}
+  .scene{width:var(--die);height:var(--die);perspective:calc(var(--die)*3.8)}
+  .face{padding:calc(var(--die)*0.16);border-radius:calc(var(--die)*0.18);gap:calc(var(--die)*0.035)}
+  .face i{width:calc(var(--die)*0.17);height:calc(var(--die)*0.17)}
+  .f1{transform:translateZ(calc(var(--die)/2))}
+  .f6{transform:rotateY(180deg) translateZ(calc(var(--die)/2))}
+  .f2{transform:rotateY(90deg) translateZ(calc(var(--die)/2))}
+  .f5{transform:rotateY(-90deg) translateZ(calc(var(--die)/2))}
+  .f3{transform:rotateX(90deg) translateZ(calc(var(--die)/2))}
+  .f4{transform:rotateX(-90deg) translateZ(calc(var(--die)/2))}
+  .rollbtn{font-size:clamp(12px,3.7vh,17px);padding:calc(var(--die)*0.17) 4px;border-radius:12px;border-width:3px}
+  .deckpile{width:clamp(42px,13vh,62px);font-size:clamp(7px,2.1vh,10px);border-radius:7px}
+}
+
+/* monte seu prato: alimentos ao lado, sem rolar */
+@media (max-height:560px){
+  .plate-wrap{display:grid;grid-template-columns:minmax(96px,24%) 1fr;grid-template-rows:auto auto;
+    gap:6px 12px;align-items:center;justify-items:center;width:100%}
+  .plate{grid-column:1;grid-row:1;width:100%;padding:13%}
+  .meter{grid-column:1;grid-row:2}
+  .tray{grid-column:2;grid-row:1/3;max-height:100%;overflow:auto;align-content:center;gap:6px}
+  .plate.resumo{width:min(132px,34%)}
+  .sbody:has(.plate.resumo){display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:center;column-gap:12px}
+  .sbody:has(.plate.resumo) .plate.resumo{grid-column:1;grid-row:1/3;align-self:center;width:118px;height:118px;flex:none;padding:11%}
+  .sbody:has(.plate.resumo) .stext{grid-column:2;grid-row:1}
+  .sbody:has(.plate.resumo) .snote{grid-column:2;grid-row:2}
+  .plate .bit em{font-size:17px} .plate .bit span{font-size:6px}
+  .sbody .stext{font-size:14px}
+}
 </style>
 
 
@@ -1030,7 +1065,7 @@ function platePlacar(p,chosen,errs){
   errs===0?sfx.win():sfx.card();
   showStage({tone:"yellow",ico:errs===0?"🌟":"🍽️",kicker:`Prato de ${p.name}`,
     title:errs===0?"Que prato bonito!":"Prato montado!",
-    html:`<div class="plate" style="width:min(212px,62%);margin-inline:auto">${chosen.map(c=>`<span class="bit"><em>${c.f[0]}</em><span>${c.f[1]}</span></span>`).join("")}</div>
+    html:`<div class="plate resumo">${chosen.map(c=>`<span class="bit"><em>${c.f[0]}</em><span>${c.f[1]}</span></span>`).join("")}</div>
       <p class="stext">${msg}</p><div class="snote">No seu prato: ${goods.join(", ")||"nenhum alimento saudável"}.</div>`,
     actions:[{label:errs===0?"Bom apetite! Avançar 1 casa":"Bom apetite!",cls:errs===0?"":"grey",
       go:async()=>{closeStage();
