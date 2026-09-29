@@ -327,6 +327,50 @@ body.fica-em-pe .rotate{display:none!important}
 
 /* celular deitado é muito baixo: as regras ficam no botão ? do topo */
 @media (max-height:430px){ .setup .rules{display:none} }
+
+/* celular deitado: barras nas laterais para o tabuleiro usar toda a altura */
+@media (max-height:560px) and (orientation:landscape){
+  .wrap{flex-direction:row;align-items:center;justify-content:center;gap:8px;
+    padding-inline:8px;padding-block:6px;max-width:none}
+  .board{order:2;margin:0;
+    width:min(calc(100vw - 206px), calc((100dvh - 16px) * 1.4133))}
+
+  .topbar{order:1;flex-direction:column;align-items:stretch;gap:5px;width:94px;flex:none}
+  .crest{flex-direction:column;gap:3px;padding:5px 4px;text-align:center;border-radius:12px}
+  .crest-mark{width:22px;height:22px;font-size:12px}
+  .crest h1{font-size:10.5px;line-height:1.1}
+  .chips{flex-direction:column;margin-left:0;gap:4px;width:100%}
+  .chip{width:100%;font-size:10px;padding:2px 5px;gap:4px;border-radius:9px;overflow:hidden}
+  .chip .kid{width:16px;height:16px}
+  .tools{margin-left:0;display:grid;grid-template-columns:1fr 1fr;gap:4px}
+  .tool{width:100%;height:26px;font-size:12px;border-radius:8px}
+
+  .bar{order:3;flex-direction:column;width:88px;flex:none;margin:0;gap:7px;padding:8px 6px;border-radius:14px}
+  .rollbtn{width:100%;font-size:11.5px;padding:7px 3px;border-radius:10px;line-height:1.15;white-space:normal}
+  .chip{font-size:9px} .chip .pos{font-size:8.5px}
+  .deckpile{width:38px}
+  .bar .deckpile:last-of-type{margin-top:-2px}
+}
+
+/* carta aberta: botões ao lado, sem precisar rolar */
+@media (max-height:560px){
+  .scard{display:grid;grid-template-columns:1fr minmax(148px,30%);grid-template-rows:auto minmax(0,1fr);
+    max-height:calc(100dvh - 20px);width:min(720px,100%)}
+  .shead{grid-column:1/-1}
+  .sbody{grid-column:1;grid-row:2;overflow:auto;padding:14px;gap:10px}
+  .sacts{grid-column:2;grid-row:2;flex-direction:column;justify-content:center;align-content:center;
+    padding:14px 14px 14px 0;gap:8px;overflow:auto}
+  .sacts .btn{flex:0 0 auto;width:100%;font-size:14px;padding:10px 10px}
+  .scard:has(.sacts:empty){grid-template-columns:1fr}
+  .sacts:empty{display:none}
+  .flip{width:min(150px,44%)}
+  .stext{font-size:15px;line-height:1.4}
+  .snote{font-size:12.5px;padding:8px 10px}
+  .plate{width:min(150px,50%)}
+  .food{width:60px;min-height:60px} .food em{font-size:22px} .food span{font-size:9px}
+  .check{font-size:12px;padding:6px 9px}
+}
+
 </style>
 
 
