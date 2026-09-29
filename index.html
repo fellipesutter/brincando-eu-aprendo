@@ -81,7 +81,7 @@ h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
 /* ---------- tabuleiro (arte do usuario) ---------- */
 .board{
   position:relative;container-type:inline-size;flex:none;
-  width:min(100%, calc((100dvh - 176px) * 1.4133));
+  width:min(100%, calc((100dvh - var(--chrome,176px)) * 1.4133));
   margin-inline:auto;aspect-ratio:1491/1055;
   border-radius:1.4cqw;overflow:hidden;
   box-shadow:0 .5cqw 0 rgba(20,45,80,.22), 0 1.4cqw 3cqw -.8cqw rgba(20,45,80,.55);
@@ -128,6 +128,21 @@ h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
   .rollbtn{font-size:16px;padding:10px 16px}
   .dhint{display:none}
 }
+
+
+/* celular em pé: convida a girar */
+.rotate{display:none}
+@media (orientation:portrait) and (max-width:820px){
+  .rotate{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:24px;
+    background:linear-gradient(#A8E2F7,#BDEBFB 30%,#9FD65F 62%,#63B037 100%)}
+}
+body.fica-em-pe .rotate{display:none!important}
+.rotate-card{width:min(360px,100%);background:#fff;border-radius:26px;border:5px solid #fff;padding:22px;
+  text-align:center;box-shadow:0 22px 50px -18px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:12px}
+.rotate-ico{font-size:58px;line-height:1;animation:gira 2.4s ease-in-out infinite;transform-origin:50% 50%}
+@keyframes gira{0%,45%{transform:rotate(0)}70%,100%{transform:rotate(90deg)}}
+.rotate-card h2{font-size:25px;font-weight:800;color:var(--navy);line-height:1.05}
+.rotate-card p{margin:0;font-weight:700;color:var(--ink-soft);font-size:14.5px;line-height:1.45}
 /* ---------- pawns ---------- */
 .pawns{position:absolute;inset:0;pointer-events:none;z-index:6}
 .pawn{position:absolute;top:0;left:0;transition:transform 1s cubic-bezier(.42,.02,.28,1);will-change:transform}
@@ -274,6 +289,44 @@ h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
 @media (prefers-reduced-motion: reduce){
   .pawn.turn:not(.hop) .pawn-in{animation:none!important}
 }
+/* tela baixa (celular deitado): encolhe tudo que não é tabuleiro */
+@media (max-height:560px){
+  :root{--chrome:106px}
+  .wrap{gap:4px;padding-block:4px 6px}
+  .topbar{min-height:0}
+  .crest{padding:2px 8px 2px 4px;border-radius:10px;gap:6px}
+  .crest-mark{width:24px;height:24px;font-size:13px;border-radius:7px}
+  .crest h1{font-size:12.5px}
+  .tool{width:30px;height:30px;font-size:14px;border-radius:9px}
+  .chip{font-size:11px;padding:2px 8px 2px 3px;border-radius:10px;gap:4px}
+  .chip .kid{width:18px;height:18px;border-width:2px}
+  .chip .pos{font-size:9.5px}
+  .bar{gap:8px;padding:4px 10px;border-radius:14px}
+  .scene{width:42px;height:42px;perspective:160px}
+  .face{padding:6px;border-radius:7px;gap:1px}
+  .face i{width:7px;height:7px}
+  .f1{transform:translateZ(21px)} .f6{transform:rotateY(180deg) translateZ(21px)}
+  .f2{transform:rotateY(90deg) translateZ(21px)} .f5{transform:rotateY(-90deg) translateZ(21px)}
+  .f3{transform:rotateX(90deg) translateZ(21px)} .f4{transform:rotateX(-90deg) translateZ(21px)}
+  .rollbtn{font-size:14px;padding:7px 13px;border-radius:11px;border-width:2px}
+  .deckpile{width:32px;border-radius:5px;font-size:6px}
+  .dhint{display:none}
+  /* tela inicial também precisa caber deitada */
+  .scard2{padding:13px;gap:8px;border-radius:20px}
+  .setup-title .l1{font-size:26px} .setup-title .l2{font-size:21px}
+  .setup-title span{-webkit-text-stroke-width:3px;text-shadow:0 3px 0 #1D4E9B}
+  .lab{font-size:10px;margin-bottom:4px}
+  .count button{padding:7px 0;font-size:14px;border-radius:11px}
+  .pform{padding:5px 7px;border-radius:13px;gap:7px}
+  .pform .kid{width:34px;height:34px}
+  .pform input{padding:6px 9px;font-size:13.5px;border-radius:9px}
+  .gsw button{width:30px;height:30px;font-size:14px;border-radius:9px}
+  .rules{font-size:11.5px;padding:8px;border-radius:11px;line-height:1.35}
+  .setup .btn{padding:10px 14px;font-size:15px}
+}
+
+/* celular deitado é muito baixo: as regras ficam no botão ? do topo */
+@media (max-height:430px){ .setup .rules{display:none} }
 </style>
 
 
@@ -288,6 +341,7 @@ h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
     </div>
     <div class="chips" id="chips"></div>
     <div class="tools">
+      <button class="tool" id="btnFull" title="Tela cheia">⛶</button>
       <button class="tool" id="btnSound" aria-pressed="false" title="Ligar ou desligar o som">🔊</button>
       <button class="tool" id="btnRules" title="Como se joga">❔</button>
       <button class="tool" id="btnRestart" title="Começar de novo">↺</button>
@@ -306,6 +360,16 @@ h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
     <div class="deckpile q" id="deckQ">QUIZ</div>
     <div class="deckpile c" id="deckC">CARTA<br>CONSE-<br>QUÊNCIA</div>
     <div class="dhint">Toque em qualquer casa para ler o que está escrito nela.</div>
+  </div>
+</div>
+
+<div class="rotate" id="rotateTip">
+  <div class="rotate-card">
+    <div class="rotate-ico">📱</div>
+    <h2>Vire o celular</h2>
+    <p>Deitado, o tabuleiro fica bem maior e dá para ler o que está escrito nas casas.</p>
+    <button class="btn gold" id="btnFullTip">Tela cheia e girar</button>
+    <button class="btn grey" id="btnFicaEmPe">Jogar em pé mesmo assim</button>
   </div>
 </div>
 
@@ -1062,6 +1126,16 @@ function showRules(){
 
 document.documentElement.style.setProperty("--art",`url("${$("#art").src}")`);
 buildBoard();buildDie();
+
+// o navegador só deixa travar a orientação em tela cheia, e o iPhone não deixa nem assim
+async function telaCheiaDeitado(){
+  try{ if(!document.fullscreenElement) await document.documentElement.requestFullscreen(); }catch(e){}
+  try{ await screen.orientation.lock("landscape"); }
+  catch(e){ toast("Seu aparelho não deixa travar a tela. Gire o celular com a mão.",3200); }
+}
+$("#btnFull").addEventListener("click",telaCheiaDeitado);
+$("#btnFullTip").addEventListener("click",telaCheiaDeitado);
+$("#btnFicaEmPe").addEventListener("click",()=>document.body.classList.add("fica-em-pe"));
 
 $("#btnRoll").addEventListener("click",onRoll);
 $("#btnRules").addEventListener("click",showRules);
